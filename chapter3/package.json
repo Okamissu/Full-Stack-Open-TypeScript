@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "scripts": {
+    "tsc": "tsc",
+    "multiply": "tsc && node multiplier.ts"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}
