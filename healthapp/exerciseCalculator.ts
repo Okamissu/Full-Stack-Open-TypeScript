@@ -1,3 +1,5 @@
+import { parseNumber, handleError } from './utils.ts';
+
 interface Result {
   periodLength: number;
   trainingDays: number;
@@ -12,6 +14,35 @@ interface Rating {
   rating: number;
   ratingDescription: string;
 }
+
+interface ExerciseValues {
+  target: number;
+  dailyExercises: number[];
+}
+
+const parseExerciseArguments = (args: string[]): ExerciseValues => {
+  if (args.length < 4) {
+    throw new Error(
+      'Usage: npm run calculateExercises <target> <day1> <day2> ...',
+    );
+  }
+
+  const target = parseNumber(args[2]);
+  const dailyExercises = args.slice(3).map(parseNumber);
+
+  if (target <= 0) {
+    throw new Error('Target must be positive');
+  }
+
+  if (dailyExercises.some((hours) => hours < 0)) {
+    throw new Error('Exercise hours cannot be negative');
+  }
+
+  return {
+    target,
+    dailyExercises,
+  };
+};
 
 const getRating = (average: number, target: number): Rating => {
   if (average >= target) {
@@ -35,14 +66,16 @@ const getRating = (average: number, target: number): Rating => {
   };
 };
 
-const calculateExercises = (
+export const calculateExercises = (
   dailyExercises: number[],
   target: number,
 ): Result => {
   const periodLength = dailyExercises.length;
-  const trainingDays = dailyExercises.filter((value) => value > 0).length;
-  const sum = dailyExercises.reduce((acc, num) => acc + num, 0);
-  const average = sum / periodLength;
+  const trainingDays = dailyExercises.filter((hours) => hours > 0).length;
+
+  const totalHours = dailyExercises.reduce((sum, hours) => sum + hours, 0);
+
+  const average = totalHours / periodLength;
   const success = average >= target;
 
   const { rating, ratingDescription } = getRating(average, target);
@@ -58,4 +91,10 @@ const calculateExercises = (
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { dailyExercises, target } = parseExerciseArguments(process.argv);
+  const result = calculateExercises(dailyExercises, target);
+  console.log(result);
+} catch (error) {
+  handleError(error);
+}

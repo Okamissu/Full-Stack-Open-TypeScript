@@ -2,6 +2,7 @@
   "compilerOptions": {
     "noImplicitAny": true,
     "noEmit": true,
-    "types": ["node"]
+    "types": ["node"],
+    "allowImportingTsExtensions": true
   }
 }
