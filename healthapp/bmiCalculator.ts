@@ -13,7 +13,7 @@ const categories = [
   { max: 40, label: 'Obese (Class II)' },
 ] as const;
 
-const parseArguments = (args: string[]): BmiValues => {
+const parseBmiArguments = (args: string[]): BmiValues => {
   if (args.length < 4) throw new Error('Not enough arguments');
   if (args.length > 4) throw new Error('Too many arguments');
 
@@ -37,7 +37,7 @@ const calculateBmi = (height: number, weight: number): string => {
 };
 
 try {
-  const { height, weight } = parseArguments(process.argv);
+  const { height, weight } = parseBmiArguments(process.argv);
   const result = calculateBmi(height, weight);
   console.log(result);
 } catch (error: unknown) {
