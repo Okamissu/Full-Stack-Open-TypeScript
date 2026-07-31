@@ -1,5 +1,3 @@
-import { parse } from 'node:path';
-
 interface MultiplyValues {
   value1: number;
   value2: number;
