@@ -23,14 +23,14 @@ const parseBmiArguments = (args: string[]): BmiValues => {
   const height = parseNumber(args[2]);
   const weight = parseNumber(args[3]);
 
-  if (height <= 0 || weight <= 0) {
-    throw new Error('Height and weight must be positive');
-  }
-
   return { height, weight };
 };
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
+  if (height <= 0 || weight <= 0) {
+    throw new Error('malformatted parameters');
+  }
+
   const heightInMeters = height / 100;
   const bmi = weight / heightInMeters ** 2;
 
@@ -40,10 +40,11 @@ const calculateBmi = (height: number, weight: number): string => {
   );
 };
 
-try {
-  const { height, weight } = parseBmiArguments(process.argv);
-  const result = calculateBmi(height, weight);
-  console.log(result);
-} catch (error) {
-  handleError(error);
+if (process.argv[1] === import.meta.filename) {
+  try {
+    const { height, weight } = parseBmiArguments(process.argv);
+    console.log(calculateBmi(height, weight));
+  } catch (error) {
+    handleError(error);
+  }
 }
