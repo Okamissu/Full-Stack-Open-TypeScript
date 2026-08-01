@@ -91,10 +91,12 @@ export const calculateExercises = (
   };
 };
 
-try {
-  const { dailyExercises, target } = parseExerciseArguments(process.argv);
-  const result = calculateExercises(dailyExercises, target);
-  console.log(result);
-} catch (error) {
-  handleError(error);
+if (process.argv[1] === import.meta.filename) {
+  try {
+    const { dailyExercises, target } = parseExerciseArguments(process.argv);
+    const result = calculateExercises(dailyExercises, target);
+    console.log(result);
+  } catch (error) {
+    handleError(error);
+  }
 }

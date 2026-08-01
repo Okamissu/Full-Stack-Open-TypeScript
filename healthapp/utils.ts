@@ -1,3 +1,17 @@
+interface ExerciseBody {
+  daily_exercises: unknown;
+  target: unknown;
+}
+
+export const isExerciseBody = (value: unknown): value is ExerciseBody => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'daily_exercises' in value &&
+    'target' in value
+  );
+};
+
 export const handleError = (error: unknown): void => {
   const message =
     error instanceof Error
