@@ -14,3 +14,5 @@ export type Patient = {
   gender: Gender;
   occupation: string;
 };
+
+export type NonSensitivePatient = Omit<Patient, 'ssn'>;
