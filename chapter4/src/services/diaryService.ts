@@ -1,5 +1,9 @@
 import diaries from '../../data/entries.ts';
-import type { DiaryEntry, NonSensitiveDiaryEntry } from '../types.ts';
+import type {
+  DiaryEntry,
+  NewDiaryEntry,
+  NonSensitiveDiaryEntry,
+} from '../types.ts';
 
 const getEntries = (): DiaryEntry[] => {
   return diaries;
@@ -19,8 +23,14 @@ const findById = (id: number): DiaryEntry | undefined => {
   return entry;
 };
 
-const addDiary = () => {
-  return null;
+const addDiary = (entry: NewDiaryEntry) => {
+  const newDiaryEntry = {
+    id: Math.max(...diaries.map((d) => d.id)) + 1,
+    ...entry,
+  };
+
+  diaries.push(newDiaryEntry);
+  return newDiaryEntry;
 };
 
 export default {
