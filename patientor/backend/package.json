@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "tsc": "tsc",
-    "dev": "concurrently \"tsc --watch\" \"node --watch index.ts\"",
+    "dev": "concurrently \"tsc --watch\" \"node --watch ./src/index.ts\"",
     "start": "node index.ts",
     "lint": "eslint ."
   },
