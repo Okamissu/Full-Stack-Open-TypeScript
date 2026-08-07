@@ -4,7 +4,13 @@ export type Diagnosis = {
   latin?: string;
 };
 
-type Gender = 'male' | 'female' | 'other';
+export const Gender = {
+  Male: 'male',
+  Female: 'female',
+  Other: 'other',
+} as const;
+
+export type Gender = (typeof Gender)[keyof typeof Gender];
 
 export type Patient = {
   id: string;
@@ -16,3 +22,5 @@ export type Patient = {
 };
 
 export type NonSensitivePatient = Omit<Patient, 'ssn'>;
+
+export type NewPatient = Omit<Patient, 'id'>;
