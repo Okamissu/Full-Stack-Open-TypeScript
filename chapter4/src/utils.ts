@@ -39,14 +39,14 @@ const parseDate = (date: unknown): string => {
 
 const parseWeather = (weather: unknown): Weather => {
   if (!isString(weather) || !isWeather(weather))
-    throw new Error('Incorrect or missing weather' + weather);
+    throw new Error('Incorrect or missing weather: ' + weather);
 
   return weather;
 };
 
 const parseVisibility = (visibility: unknown): Visibility => {
   if (!isString(visibility) || !isVisibility(visibility))
-    throw new Error('Incorrect or missing visibility' + visibility);
+    throw new Error('Incorrect or missing visibility: ' + visibility);
 
   return visibility;
 };
