@@ -1,38 +1,55 @@
-import type { NewDiaryEntry, Weather } from './types.ts';
+import { type NewDiaryEntry, Visibility, Weather } from './types.ts';
 
 const parseNewDiaryEntry = (object: unknown): NewDiaryEntry => {
-  console.log(object); // now object is no longer unused
+  if (!object || typeof object !== 'object')
+    throw new Error('Incorrect or missing data');
+
+  if (
+    !(
+      'weather' in object &&
+      'visibility' in object &&
+      'date' in object &&
+      'comment' in object
+    )
+  )
+    throw new Error('Incorrect data: some fields are missing');
+
   const newEntry: NewDiaryEntry = {
-    weather: 'cloudy', // fake the return value
-    visibility: 'great',
-    date: '2026-1-1',
-    comment: 'fake news',
+    weather: parseWeather(object.weather),
+    visibility: parseVisibility(object.visibility),
+    date: parseDate(object.date),
+    comment: parseComment(object.comment),
   };
 
   return newEntry;
 };
 
 const parseComment = (comment: unknown): string => {
-  if (!comment || !isString(comment))
-    throw new Error('Incorrect or missing comment');
+  if (!isString(comment)) throw new Error('Incorrect or missing comment');
 
   return comment;
 };
 
 const parseDate = (date: unknown): string => {
-  if (!date || !isString(date) || !isDate(date))
+  if (!isString(date) || !isDate(date))
     throw new Error('Incorrect or missing date: ' + date);
 
   return date;
 };
 
 const parseWeather = (weather: unknown): Weather => {
-  if (!weather || !isString(weather) || !isWeather(weather))
+  if (!isString(weather) || !isWeather(weather))
     throw new Error('Incorrect or missing weather' + weather);
 
   return weather;
 };
 
+const parseVisibility = (visibility: unknown): Visibility => {
+  if (!isString(visibility) || !isVisibility(visibility))
+    throw new Error('Incorrect or missing visibility' + visibility);
+
+  return visibility;
+};
 const isString = (text: unknown): text is string => {
   return typeof text === 'string';
 };
@@ -41,7 +58,17 @@ const isDate = (date: string): boolean => {
   return Boolean(Date.parse(date));
 };
 
-const isWeather = (str: string): str is Weather => {
-  return ['sunny', 'rainy', 'cloudy', 'stormy'].includes(str);
+const isWeather = (param: string): param is Weather => {
+  return (Object.values(Weather) as string[]).includes(param);
 };
-export default { parseNewDiaryEntry, parseComment, parseDate };
+
+const isVisibility = (param: string): param is Visibility => {
+  return (Object.values(Visibility) as string[]).includes(param);
+};
+export default {
+  parseNewDiaryEntry,
+  parseComment,
+  parseDate,
+  parseWeather,
+  parseVisibility,
+};
