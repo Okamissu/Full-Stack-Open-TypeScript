@@ -65,10 +65,5 @@ const isWeather = (param: string): param is Weather => {
 const isVisibility = (param: string): param is Visibility => {
   return (Object.values(Visibility) as string[]).includes(param);
 };
-export default {
-  parseNewDiaryEntry,
-  parseComment,
-  parseDate,
-  parseWeather,
-  parseVisibility,
-};
+
+export default parseNewDiaryEntry;
