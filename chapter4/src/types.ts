@@ -1,4 +1,12 @@
-export type Weather = 'sunny' | 'rainy' | 'cloudy' | 'windy' | 'stormy';
+export const Weather = {
+  Sunny: 'sunny',
+  Rainy: 'rainy',
+  Cloudy: 'cloudy',
+  Stormy: 'stormy',
+  Windy: 'windy',
+} as const;
+
+export type Weather = (typeof Weather)[keyof typeof Weather];
 
 export type Visibility = 'great' | 'good' | 'ok' | 'poor';
 
