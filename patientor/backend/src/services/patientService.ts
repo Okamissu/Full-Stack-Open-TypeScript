@@ -7,7 +7,7 @@ const getPatients = (): Patient[] => patients;
 const getNonSensitivePatients = (): NonSensitivePatient[] =>
   patients.map(({ ssn, ...other }) => other);
 
-const addPatient = (patient: NewPatient) => {
+const addPatient = (patient: NewPatient): Patient => {
   const newPatient = {
     id: uuid(),
     ...patient,
