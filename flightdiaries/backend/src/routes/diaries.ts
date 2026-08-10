@@ -1,9 +1,11 @@
-import express, { type Response } from 'express';
-import { z } from 'zod';
-
+import express, { type Request, type Response } from 'express';
 import diaryService from '../services/diaryService.ts';
-import type { NonSensitiveDiaryEntry } from '../types.ts';
-import parseNewDiaryEntry from '../utils.ts';
+import {
+  type DiaryEntry,
+  type NewDiaryEntry,
+  type NonSensitiveDiaryEntry,
+} from '../types.ts';
+import { newDiaryParser, errorMiddleware } from '../middleware.ts';
 
 const router = express.Router();
 
@@ -19,18 +21,18 @@ router.get('/:id', (req, res) => {
   else res.sendStatus(404);
 });
 
-router.post('/', (req, res) => {
-  try {
-    const newDiaryEntry = parseNewDiaryEntry(req.body);
-    const addedEntry = diaryService.addDiary(newDiaryEntry);
+router.post(
+  '/',
+  newDiaryParser,
+  (
+    req: Request<unknown, unknown, NewDiaryEntry>,
+    res: Response<DiaryEntry>,
+  ) => {
+    const addedEntry = diaryService.addDiary(req.body);
     res.json(addedEntry);
-  } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
-      res.status(400).send({ error: error.issues });
-    } else {
-      res.status(400).send({ error: 'unknown error' });
-    }
-  }
-});
+  },
+);
+
+router.use(errorMiddleware);
 
 export default router;
