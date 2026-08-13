@@ -1,30 +1,24 @@
-interface Note {
-  id: string;
-  content: string;
-}
-
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import type { Note } from './types';
+import noteService from './noteService';
 
 const App = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState('');
 
-  const noteCreation = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-    const noteToAdd = {
-      content: newNote,
-      id: String(notes.length + 1),
-    };
-    setNotes((prevNotes) => [...prevNotes, noteToAdd]);
-    setNewNote('');
-  };
-
   useEffect(() => {
-    axios.get<Note[]>('http://localhost:3001/notes').then((response) => {
-      setNotes(response.data);
+    noteService.getAll().then((initialNotes) => {
+      setNotes(initialNotes);
     });
   }, []);
+
+  const noteCreation = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    noteService.create({ content: newNote }).then((returnedNote) => {
+      setNotes(notes.concat(returnedNote));
+    });
+    setNewNote('');
+  };
 
   return (
     <div>
