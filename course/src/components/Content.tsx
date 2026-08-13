@@ -32,8 +32,19 @@ const Content = ({ courseParts }: { courseParts: CoursePart[] }) => {
                 <p className="font-bold">
                   {part.name} {part.exerciseCount}
                 </p>
-                <p className="italic">Confusing description</p>
+                <p className="italic">{part.description}</p>
                 <p>{part.backgroundMaterial}</p>
+              </div>
+            );
+
+          case 'special':
+            return (
+              <div key={part.name} className="*:my-0.5">
+                <p className="font-bold">
+                  {part.name} {part.exerciseCount}
+                </p>
+                <p className="italic">{part.description}</p>
+                <p>required skills: {part.requirements.join(', ')}</p>
               </div>
             );
 
