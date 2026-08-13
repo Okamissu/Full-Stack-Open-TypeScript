@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/json-server/schema.json",
+  "notes": [
+    { "id": "1", "content": "testing" },
+    { "id": "2", "content": "testing 2" },
+    { "id": "3", "content": "testing 3" },
+    { "id": "4", "content": "testing 4" },
+    { "id": "5", "content": "testing 5" },
+    { "id": "6", "content": "testing 6" },
+    { "id": "7", "content": "testing 7" },
+    { "id": "8", "content": "testing 8" },
+    { "id": "9", "content": "testing 9" },
+    { "id": "10", "content": "testing 10" }
+  ]
+}

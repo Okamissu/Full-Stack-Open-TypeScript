@@ -3,10 +3,11 @@ interface Note {
   content: string;
 }
 
-import { useState } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const App = () => {
-  const [notes, setNotes] = useState<Note[]>([{ id: '1', content: 'testing' }]);
+  const [notes, setNotes] = useState<Note[]>([]);
   const [newNote, setNewNote] = useState('');
 
   const noteCreation = (event: React.SyntheticEvent) => {
@@ -18,6 +19,12 @@ const App = () => {
     setNotes((prevNotes) => [...prevNotes, noteToAdd]);
     setNewNote('');
   };
+
+  useEffect(() => {
+    axios.get<Note[]>('http://localhost:3001/notes').then((response) => {
+      setNotes(response.data);
+    });
+  }, []);
 
   return (
     <div>
