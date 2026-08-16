@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link as RouterLink } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Container,
   Box,
@@ -7,12 +7,10 @@ import {
   Card,
   CardContent,
   Divider,
-  Button,
 } from '@mui/material';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { Patient } from '../../types';
 import patientService from '../../services/patients';
@@ -57,31 +55,11 @@ const PatientDetailPage = () => {
   };
 
   if (!patient) {
-    return (
-      <Container sx={{ mt: 4 }}>
-        <Button
-          component={RouterLink}
-          to="/"
-          startIcon={<ArrowBackIcon />}
-          sx={{ mt: 2 }}
-        >
-          Back to the list
-        </Button>
-      </Container>
-    );
+    return <></>;
   }
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Button
-        component={RouterLink}
-        to="/"
-        startIcon={<ArrowBackIcon />}
-        sx={{ mb: 3 }}
-      >
-        Back to the list
-      </Button>
-
       <Card>
         <CardContent sx={{ p: 4 }}>
           <Box display="flex" alignItems="center" mb={2}>
