@@ -1,4 +1,4 @@
-import type { NewDiaryEntry, DiaryEntry } from './types';
+import type { NewDiaryEntry, DiaryEntry } from '../types';
 
 const baseUrl = 'http://localhost:3000/api/diaries';
 
@@ -10,7 +10,7 @@ const getAll = async (): Promise<DiaryEntry[]> => {
   return response.json();
 };
 
-const create = async (object: NewDiaryEntry): Promise<DiaryEntry> => {
+const create = async (object: NewDiaryEntry) => {
   const response = await fetch(baseUrl, {
     method: 'POST',
     headers: {
@@ -19,7 +19,10 @@ const create = async (object: NewDiaryEntry): Promise<DiaryEntry> => {
     body: JSON.stringify(object),
   });
 
-  if (!response.ok) throw new Error('Failed to create diary entry');
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error);
+  }
 
   return response.json();
 };
