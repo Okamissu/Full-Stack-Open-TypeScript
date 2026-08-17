@@ -5,6 +5,10 @@ const getDiagnoses = (): Diagnosis[] => {
   return diagnoses;
 };
 
+const getDiagnosis = (code: string): Diagnosis | undefined =>
+  diagnoses.find((d) => d.code === code);
+
 export default {
   getDiagnoses,
+  getDiagnosis,
 };
