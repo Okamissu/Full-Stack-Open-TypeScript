@@ -13,8 +13,8 @@ import {
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
-
-import { Diagnosis, Entry, HealthCheckRatingLabel, Patient } from '../../types';
+import EntryDetails from './EntryDetails';
+import type { Diagnosis, Entry, Patient } from '../../types';
 import patientService from '../../services/patients';
 import diagnosisService from '../../services/diagnoses';
 
@@ -104,54 +104,6 @@ const PatientDetailPage = () => {
       }
     };
 
-    const renderTypeSpecific = (entry: Entry) => {
-      switch (entry.type) {
-        case 'Hospital':
-          return (
-            <>
-              <Box mb={1}>
-                <Typography variant="subtitle1" color="text.secondary">
-                  <strong>Discharge date:</strong> {entry.discharge.date}
-                </Typography>
-              </Box>
-              <Box mb={1}>
-                <Typography variant="subtitle1" color="text.secondary">
-                  <strong>Discharge criteria:</strong>{' '}
-                  {entry.discharge.criteria}
-                </Typography>
-              </Box>
-            </>
-          );
-        case 'OccupationalHealthcare':
-          return (
-            <>
-              <Box mb={1}>
-                <Typography variant="subtitle1" color="text.secondary">
-                  <strong>Employer:</strong> {entry.employerName}
-                </Typography>
-              </Box>
-              <Box mb={1}>
-                <Typography variant="subtitle1" color="text.secondary">
-                  <strong>Sick leave:</strong>{' '}
-                  {entry.sickLeave
-                    ? `${entry.sickLeave.startDate} - ${entry.sickLeave.endDate}`
-                    : '-'}
-                </Typography>
-              </Box>
-            </>
-          );
-        case 'HealthCheck':
-          return (
-            <Box mb={1}>
-              <Typography variant="subtitle1" color="text.secondary">
-                <strong>Health rating:</strong>{' '}
-                {HealthCheckRatingLabel[entry.healthCheckRating]}
-              </Typography>
-            </Box>
-          );
-      }
-    };
-
     return (
       <Box key={entry.id}>
         <Divider sx={{ mb: 2 }} />
@@ -212,7 +164,7 @@ const PatientDetailPage = () => {
           )}
         </Box>
 
-        {renderTypeSpecific(entry)}
+        <EntryDetails entry={entry} />
       </Box>
     );
   };
