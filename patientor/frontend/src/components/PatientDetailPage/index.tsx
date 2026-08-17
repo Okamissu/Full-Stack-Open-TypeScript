@@ -14,13 +14,15 @@ import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 
-import { Entry, HealthCheckRatingLabel, Patient } from '../../types';
+import { Diagnosis, Entry, HealthCheckRatingLabel, Patient } from '../../types';
 import patientService from '../../services/patients';
+import diagnosisService from '../../services/diagnoses';
 
 const PatientDetailPage = () => {
   const { id } = useParams<{ id: string }>();
 
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [diagnoses, setDiagnoses] = useState<Record<string, Diagnosis>>({});
 
   useEffect(() => {
     const fetchPatient = async () => {
@@ -35,6 +37,38 @@ const PatientDetailPage = () => {
 
     void fetchPatient();
   }, [id]);
+
+  useEffect(() => {
+    const fetchDiagnoses = async () => {
+      if (!patient) return;
+
+      const codes = patient.entries.flatMap(
+        (entry) => entry.diagnosisCodes ?? [],
+      );
+
+      const uniqueCodes = [...new Set(codes)];
+
+      try {
+        const fetchedDiagnoses = await Promise.all(
+          uniqueCodes.map((code) => diagnosisService.getOne(code)),
+        );
+
+        const diagnosisMap = fetchedDiagnoses.reduce<Record<string, Diagnosis>>(
+          (acc, diagnosis) => {
+            acc[diagnosis.code] = diagnosis;
+            return acc;
+          },
+          {},
+        );
+
+        setDiagnoses(diagnosisMap);
+      } catch (e: unknown) {
+        console.error(e);
+      }
+    };
+
+    void fetchDiagnoses();
+  }, [patient]);
 
   const getGenderIcon = (gender: string) => {
     switch (gender) {
@@ -119,7 +153,7 @@ const PatientDetailPage = () => {
     };
 
     return (
-      <Box>
+      <Box key={entry.id}>
         <Divider sx={{ mb: 2 }} />
         <Box mb={1}>
           <Typography variant="subtitle1" color="text.secondary">
@@ -138,23 +172,44 @@ const PatientDetailPage = () => {
         </Box>
         <Box mb={1}>
           <Typography variant="subtitle1" color="text.secondary">
-            <strong>Diagnosis codes:</strong>{' '}
-            {entry.diagnosisCodes ? (
-              <List
-                dense={true}
-                sx={{
-                  listStyleType: 'disc',
-                  listStylePosition: 'inside',
-                }}
-              >
-                {entry.diagnosisCodes.map((code) => (
-                  <ListItem sx={{ display: 'list-item' }}>{code}</ListItem>
-                ))}
-              </List>
-            ) : (
-              '-'
-            )}
+            <strong>Diagnoses:</strong>
           </Typography>
+
+          {entry.diagnosisCodes?.length ? (
+            <List
+              dense
+              sx={{
+                listStyleType: 'disc',
+                listStylePosition: 'inside',
+              }}
+            >
+              {entry.diagnosisCodes.map((code) => {
+                const diagnosis = diagnoses[code];
+
+                return (
+                  <ListItem key={code} sx={{ paddingBlock: 0, marginBlock: 0 }}>
+                    <Typography
+                      variant="subtitle1"
+                      color="text.secondary"
+                      sx={{
+                        display: 'list-item',
+                      }}
+                    >
+                      {diagnosis
+                        ? `${diagnosis.code} - ${diagnosis.name}${
+                            diagnosis.latin ? ` (${diagnosis.latin})` : ''
+                          }`
+                        : code}
+                    </Typography>
+                  </ListItem>
+                );
+              })}
+            </List>
+          ) : (
+            <Typography variant="subtitle1" color="text.secondary">
+              -
+            </Typography>
+          )}
         </Box>
 
         {renderTypeSpecific(entry)}
