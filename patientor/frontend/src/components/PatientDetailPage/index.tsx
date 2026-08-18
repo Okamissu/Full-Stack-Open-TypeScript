@@ -17,6 +17,7 @@ import EntryDetails from './EntryDetails';
 import type { Diagnosis, Entry, Patient } from '../../types';
 import patientService from '../../services/patients';
 import diagnosisService from '../../services/diagnoses';
+import EntryForm from './EntryForm';
 
 const PatientDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -163,7 +164,6 @@ const PatientDetailPage = () => {
             </Typography>
           )}
         </Box>
-
         <EntryDetails entry={entry} />
       </Box>
     );
@@ -205,6 +205,8 @@ const PatientDetailPage = () => {
           </Box>
         </CardContent>
       </Card>
+
+      <EntryForm />
 
       <Card sx={{ mt: 2 }}>
         <CardContent sx={{ p: 4 }}>
