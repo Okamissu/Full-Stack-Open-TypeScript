@@ -24,6 +24,7 @@ const patients: Patient[] = [
       },
     ],
   },
+
   {
     id: 'd2773598-f723-11e9-8f0b-362b9e155667',
     name: 'Martin Riggs',
@@ -40,7 +41,7 @@ const patients: Patient[] = [
         employerName: 'HyPD',
         diagnosisCodes: ['Z57.1', 'Z74.3', 'M51.2'],
         description:
-          'Patient mistakenly found himself in a nuclear plant waste site without protection gear. Very minor radiation poisoning. ',
+          'Patient mistakenly found himself in a nuclear plant waste site without protection gear. Very minor radiation poisoning.',
         sickLeave: {
           startDate: '2019-08-05',
           endDate: '2019-08-28',
@@ -48,6 +49,7 @@ const patients: Patient[] = [
       },
     ],
   },
+
   {
     id: 'd27736ec-f723-11e9-8f0b-362b9e155667',
     name: 'Hans Gruber',
@@ -57,6 +59,7 @@ const patients: Patient[] = [
     occupation: 'Technician',
     entries: [],
   },
+
   {
     id: 'd2773822-f723-11e9-8f0b-362b9e155667',
     name: 'Dana Scully',
@@ -92,6 +95,7 @@ const patients: Patient[] = [
       },
     ],
   },
+
   {
     id: 'd2773c6e-f723-11e9-8f0b-362b9e155667',
     name: 'Matti Luukkainen',

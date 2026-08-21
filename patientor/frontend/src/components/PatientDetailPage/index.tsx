@@ -115,12 +115,12 @@ const PatientDetailPage = ({
             <strong>Description:</strong> {entry.description}
           </Typography>
         </Box>
-        <Box mb={1}>
-          <Typography variant="subtitle1" color="text.secondary">
-            <strong>Diagnoses:</strong>
-          </Typography>
+        {entry.diagnosisCodes?.length ? (
+          <Box mb={1}>
+            <Typography variant="subtitle1" color="text.secondary">
+              <strong>Diagnoses:</strong>
+            </Typography>
 
-          {entry.diagnosisCodes?.length ? (
             <List
               dense
               sx={{
@@ -150,12 +150,11 @@ const PatientDetailPage = ({
                 );
               })}
             </List>
-          ) : (
-            <Typography variant="subtitle1" color="text.secondary">
-              -
-            </Typography>
-          )}
-        </Box>
+          </Box>
+        ) : (
+          <></>
+        )}
+
         <EntryDetails entry={entry} />
       </Box>
     );

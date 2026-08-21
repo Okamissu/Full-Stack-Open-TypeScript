@@ -25,8 +25,10 @@ const EntryForm = ({
     specialist: '',
     date: '',
     description: '',
+    diagnosisCodes: [],
     healthCheckRating: 0,
   });
+  const [diagnosisCodesInput, setDiagnosisCodesInput] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (
@@ -45,8 +47,18 @@ const EntryForm = ({
 
     setError(null);
 
+    const diagnosisCodes = diagnosisCodesInput
+      .split(',')
+      .map((code) => code.trim())
+      .filter(Boolean);
+
+    const entryToSubmit: HealthCheckEntry = {
+      ...entry,
+      diagnosisCodes,
+    };
+
     try {
-      await onEntrySubmit(entry);
+      await onEntrySubmit(entryToSubmit);
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.error ?? 'Invalid entry.');
@@ -139,6 +151,13 @@ const EntryForm = ({
             <MenuItem value={3}>Critical Risk</MenuItem>
           </TextField>
 
+          <TextField
+            label="Diagnosis codes"
+            fullWidth
+            value={diagnosisCodesInput}
+            onChange={(event) => setDiagnosisCodesInput(event.target.value)}
+            helperText="Enter diagnosis codes separated by commas"
+          />
           <Button type="submit" variant="contained">
             Save
           </Button>
