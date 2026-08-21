@@ -214,10 +214,10 @@ const PatientDetailPage = ({
 
       <Button
         variant="contained"
-        onClick={() => setShowEntryForm(true)}
+        onClick={() => setShowEntryForm((prev) => !prev)}
         sx={{ mt: 2 }}
       >
-        Add New Entry
+        {showEntryForm ? 'Close Entry Form' : 'Add New Entry'}
       </Button>
 
       {showEntryForm && (
