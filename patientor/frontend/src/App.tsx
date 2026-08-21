@@ -64,12 +64,7 @@ const App = () => {
             />
             <Route
               path="/patients/:id"
-              element={
-                <PatientDetailPage
-                  onEntrySubmit={submitPatientEntry}
-                  patients={patients}
-                />
-              }
+              element={<PatientDetailPage onEntrySubmit={submitPatientEntry} />}
             />
           </Routes>
         </Container>

@@ -356,7 +356,6 @@ const EntryForm = ({
             </Select>
           </FormControl>
 
-          {/* Dynamicznie renderowane pola specyficzne dla danego typu wizyty */}
           <Box
             sx={{
               mt: 1,
@@ -370,7 +369,7 @@ const EntryForm = ({
           </Box>
 
           <Button type="submit" variant="contained" size="large" sx={{ mt: 1 }}>
-            Save Entry
+            Add
           </Button>
         </Box>
       </CardContent>

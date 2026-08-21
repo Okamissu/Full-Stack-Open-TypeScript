@@ -9,6 +9,7 @@ import {
   Divider,
   List,
   ListItem,
+  Button,
 } from '@mui/material';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
@@ -16,20 +17,34 @@ import TransgenderIcon from '@mui/icons-material/Transgender';
 import EntryDetails from './EntryDetails';
 import type { Diagnosis, Entry, Patient, EntryWithoutId } from '../../types';
 import diagnosisService from '../../services/diagnoses';
+import patientService from '../../services/patients';
 import EntryForm from './EntryForm';
 
 const PatientDetailPage = ({
   onEntrySubmit,
-  patients,
 }: {
   onEntrySubmit: (patientId: string, values: EntryWithoutId) => Promise<void>;
-  patients: Patient[];
 }) => {
   const { id } = useParams<{ id: string }>();
 
   const [diagnoses, setDiagnoses] = useState<Record<string, Diagnosis>>({});
+  const [patient, setPatient] = useState<Patient | null>(null);
+  const [showEntryForm, setShowEntryForm] = useState(false);
 
-  const patient = patients.find((p) => p.id === id);
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchPatient = async () => {
+      try {
+        const patient = await patientService.getOne(id);
+        setPatient(patient);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    void fetchPatient();
+  }, [id]);
 
   useEffect(() => {
     const fetchDiagnoses = async () => {
@@ -197,7 +212,22 @@ const PatientDetailPage = ({
         </CardContent>
       </Card>
 
-      <EntryForm onEntrySubmit={(values) => onEntrySubmit(id, values)} />
+      <Button
+        variant="contained"
+        onClick={() => setShowEntryForm(true)}
+        sx={{ mt: 2 }}
+      >
+        Add New Entry
+      </Button>
+
+      {showEntryForm && (
+        <EntryForm
+          onEntrySubmit={async (values) => {
+            await onEntrySubmit(id, values);
+            setShowEntryForm(false);
+          }}
+        />
+      )}
 
       <Card sx={{ mt: 2 }}>
         <CardContent sx={{ p: 4 }}>
