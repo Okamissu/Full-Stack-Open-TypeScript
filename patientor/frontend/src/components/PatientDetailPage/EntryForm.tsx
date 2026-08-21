@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Alert,
@@ -10,6 +10,11 @@ import {
   Button,
   Divider,
   MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  Checkbox,
+  ListItemText,
 } from '@mui/material';
 import type {
   BaseEntry,
@@ -18,7 +23,9 @@ import type {
   HealthCheckSpecific,
   HospitalSpecific,
   OccupationalSpecific,
+  Diagnosis,
 } from '../../types';
+import diagnosisService from '../../services/diagnoses';
 
 type EntryType = EntryWithoutId['type'];
 
@@ -55,8 +62,24 @@ const EntryForm = ({
     discharge: { date: '', criteria: '' },
   });
 
-  const [diagnosisCodesInput, setDiagnosisCodesInput] = useState('');
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+  const [selectedDiagnosisCodes, setSelectedDiagnosisCodes] = useState<
+    string[]
+  >([]);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDiagnoses = async () => {
+      try {
+        const diagnoses = await diagnosisService.getAll();
+        setDiagnoses(diagnoses);
+      } catch {
+        setError('Could not fetch diagnoses.');
+      }
+    };
+
+    void fetchDiagnoses();
+  }, []);
 
   const handleBaseChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -90,10 +113,7 @@ const EntryForm = ({
     event.preventDefault();
     setError(null);
 
-    const diagnosisCodes = diagnosisCodesInput
-      .split(',')
-      .map((code) => code.trim())
-      .filter(Boolean);
+    const diagnosisCodes = selectedDiagnosisCodes;
 
     const sharedData = { ...baseEntryFields, diagnosisCodes };
     let entryToSubmit: EntryWithoutId;
@@ -111,7 +131,6 @@ const EntryForm = ({
           ...sharedData,
           type: 'OccupationalHealthcare',
           employerName: occupationalHealthcareFields.employerName,
-          // Only pass sickLeave if fields have text inside them
           ...(occupationalHealthcareFields.sickLeave?.startDate ||
           occupationalHealthcareFields.sickLeave?.endDate
             ? { sickLeave: occupationalHealthcareFields.sickLeave }
@@ -307,14 +326,37 @@ const EntryForm = ({
             onChange={handleBaseChange}
           />
 
-          <TextField
-            label="Diagnosis codes"
-            fullWidth
-            value={diagnosisCodesInput}
-            onChange={(event) => setDiagnosisCodesInput(event.target.value)}
-            helperText="Enter diagnosis codes separated by commas"
-          />
+          <FormControl fullWidth>
+            <InputLabel id="diagnosis-codes-label">Diagnosis codes</InputLabel>
 
+            <Select
+              labelId="diagnosis-codes-label"
+              multiple
+              value={selectedDiagnosisCodes}
+              onChange={(event) => {
+                const value = event.target.value;
+
+                setSelectedDiagnosisCodes(
+                  typeof value === 'string' ? value.split(',') : value,
+                );
+              }}
+              renderValue={(selected) => selected.join(', ')}
+              label="Diagnosis codes"
+            >
+              {diagnoses.map((diagnosis) => (
+                <MenuItem key={diagnosis.code} value={diagnosis.code}>
+                  <Checkbox
+                    checked={selectedDiagnosisCodes.includes(diagnosis.code)}
+                  />
+                  <ListItemText
+                    primary={`${diagnosis.code} — ${diagnosis.name}`}
+                  />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {/* Dynamicznie renderowane pola specyficzne dla danego typu wizyty */}
           <Box
             sx={{
               mt: 1,
