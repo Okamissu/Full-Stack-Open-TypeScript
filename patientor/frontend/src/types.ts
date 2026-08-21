@@ -48,7 +48,7 @@ export const HealthCheckRatingLabel: Record<HealthCheckRating, string> = {
   [HealthCheckRating.CriticalRisk]: 'Critical risk',
 };
 
-type HealthCheckRating =
+export type HealthCheckRating =
   (typeof HealthCheckRating)[keyof typeof HealthCheckRating];
 
 type HealthCheckEntry = BaseEntry & {
@@ -79,3 +79,18 @@ export type Entry =
   | HealthCheckEntry;
 
 export type EntryWithoutId = UnionOmit<Entry, 'id'>;
+
+type TypeSpecificEntryFields = UnionOmit<EntryWithoutId, keyof BaseEntry>;
+
+export type HealthCheckSpecific = Extract<
+  TypeSpecificEntryFields,
+  { type: 'HealthCheck' }
+>;
+export type OccupationalSpecific = Extract<
+  TypeSpecificEntryFields,
+  { type: 'OccupationalHealthcare' }
+>;
+export type HospitalSpecific = Extract<
+  TypeSpecificEntryFields,
+  { type: 'Hospital' }
+>;
