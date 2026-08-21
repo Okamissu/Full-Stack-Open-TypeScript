@@ -14,30 +14,22 @@ import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 import EntryDetails from './EntryDetails';
-import type { Diagnosis, Entry, Patient } from '../../types';
-import patientService from '../../services/patients';
+import type { Diagnosis, Entry, Patient, EntryWithoutId } from '../../types';
 import diagnosisService from '../../services/diagnoses';
 import EntryForm from './EntryForm';
 
-const PatientDetailPage = () => {
+const PatientDetailPage = ({
+  onEntrySubmit,
+  patients,
+}: {
+  onEntrySubmit: (patientId: string, values: EntryWithoutId) => Promise<void>;
+  patients: Patient[];
+}) => {
   const { id } = useParams<{ id: string }>();
 
-  const [patient, setPatient] = useState<Patient | null>(null);
   const [diagnoses, setDiagnoses] = useState<Record<string, Diagnosis>>({});
 
-  useEffect(() => {
-    const fetchPatient = async () => {
-      if (!id) return;
-      try {
-        const fetchedPatient = await patientService.getOne(id);
-        setPatient(fetchedPatient);
-      } catch (e: unknown) {
-        console.error(e);
-      }
-    };
-
-    void fetchPatient();
-  }, [id]);
+  const patient = patients.find((p) => p.id === id);
 
   useEffect(() => {
     const fetchDiagnoses = async () => {
@@ -169,7 +161,7 @@ const PatientDetailPage = () => {
     );
   };
 
-  if (!patient) {
+  if (!patient || !id) {
     return <></>;
   }
 
@@ -188,7 +180,7 @@ const PatientDetailPage = () => {
 
           <Box mb={1}>
             <Typography variant="subtitle1" color="text.secondary">
-              <strong>SSN:</strong> {patient.ssn || 'Brak danych'}
+              <strong>SSN:</strong> {patient.ssn || '-'}
             </Typography>
           </Box>
 
@@ -206,7 +198,7 @@ const PatientDetailPage = () => {
         </CardContent>
       </Card>
 
-      <EntryForm />
+      <EntryForm onEntrySubmit={(values) => onEntrySubmit(id, values)} />
 
       <Card sx={{ mt: 2 }}>
         <CardContent sx={{ p: 4 }}>

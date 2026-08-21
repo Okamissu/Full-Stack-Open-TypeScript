@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { Button, Divider, Container, Typography } from '@mui/material';
 
 import { apiBaseUrl } from './constants';
-import { Patient } from './types';
+import type { Patient, EntryWithoutId } from './types';
 
 import patientService from './services/patients';
 import PatientListPage from './components/PatientListPage';
@@ -22,6 +22,24 @@ const App = () => {
     };
     void fetchPatientList();
   }, []);
+
+  const submitPatientEntry = async (
+    patientId: string,
+    values: EntryWithoutId,
+  ) => {
+    const newEntry = await patientService.addEntry(patientId, values);
+
+    setPatients((prevPatients) =>
+      prevPatients.map((patient) =>
+        patient.id === patientId
+          ? {
+              ...patient,
+              entries: patient.entries.concat(newEntry),
+            }
+          : patient,
+      ),
+    );
+  };
 
   return (
     <div className="App">
@@ -44,7 +62,15 @@ const App = () => {
                 />
               }
             />
-            <Route path="/patients/:id" element={<PatientDetailPage />} />
+            <Route
+              path="/patients/:id"
+              element={
+                <PatientDetailPage
+                  onEntrySubmit={submitPatientEntry}
+                  patients={patients}
+                />
+              }
+            />
           </Routes>
         </Container>
       </Router>
